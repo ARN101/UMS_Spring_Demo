@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">University Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('TEACHER') and !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/teacher/dashboard}">Dashboard</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('STUDENT') and !hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/student/dashboard}">Dashboard</a>
+                </li>
+
+                <!-- Admin specific links -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/admins}">Admins</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/students/pending}">Pending Approvals</a>
+                </li>
+
+                <!-- Teacher & Admin links -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
+                    <a class="nav-link" th:href="@{/teacher/teachers}">Teachers</a>
+                </li>
+
+                <!-- Everyone (Admin, Teacher, Student) can view Students -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
+                    <a class="nav-link" th:href="@{/student/students}">Students</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-2" sec:authentication="principal.authorities"></span>
+                <span class="text-light me-3" sec:authentication="name"></span>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
